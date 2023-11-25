@@ -26,7 +26,8 @@ DROP TABLE IF EXISTS `themes`;
 CREATE TABLE `themes` (
   `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `user_id` BIGINT NOT NULL,
-  `dark_mode` BOOLEAN NOT NULL
+  `dark_mode` BOOLEAN NOT NULL,
+  INDEX `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
 
 -- ライブ配信
