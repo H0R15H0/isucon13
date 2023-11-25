@@ -40,6 +40,8 @@ down: ## docker compose down
 pt-run: ## 
 	sudo pt-query-digest /var/log/mysql/mysql-slow.log > ./tmp/$(shell date +mysql-slow.log-%m-%d-%H-%M -d "+9 hours")
 	ls -d ./tmp/* | tail -n1 | xargs less
+pt-show: ## show latest pt
+	ls -d ./tmp/* | tail -n1 | xargs less
 rm-log: ## remove mysql-slow.log
 	sudo rm -rf /var/log/mysql/mysql-slow.log
 	sudo systemctl restart mysql
