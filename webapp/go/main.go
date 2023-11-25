@@ -123,9 +123,11 @@ func main() {
 	e.Debug = true
 	e.Logger.SetLevel(echolog.DEBUG)
 	e.Use(middleware.Logger())
-	cookieStore := sessions.NewCookieStore(secret)
-	cookieStore.Options.Domain = "*.u.isucon.dev"
-	e.Use(session.Middleware(cookieStore))
+	if os.Getenv("ISUCON13_DEBUG") != "1" {
+		cookieStore := sessions.NewCookieStore(secret)
+		cookieStore.Options.Domain = "*.u.isucon.dev"
+		e.Use(session.Middleware(cookieStore))
+	}
 	// e.Use(middleware.Recover())
 
 	// 初期化
