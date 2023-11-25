@@ -122,6 +122,11 @@ func getUserStatisticsHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to count tips: "+err.Error())
 	}
 
+	var users []*UserModel
+	if err := tx.SelectContext(ctx, &users, "SELECT * FROM users"); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get users: "+err.Error())
+	}
+
 	// reactionsをidをキーにしてmapにする
 	reactionsMap := make(map[int64]Reaction)
 	for _, reaction := range reactions {
@@ -131,9 +136,12 @@ func getUserStatisticsHandler(c echo.Context) error {
 	tipsMap := make(map[int64]Tip)
 	for _, t := range tips {
 		tipsMap[t.ID] = t
-		score := t.Sum + reactionsMap[t.ID].Sum
+	}
+
+	for _, user := range users {
+		score := tipsMap[user.ID].Sum + reactionsMap[user.ID].Sum
 		ranking = append(ranking, UserRankingEntry{
-			Username: t.Name,
+			Username: user.Name,
 			Score:    score,
 		})
 	}
