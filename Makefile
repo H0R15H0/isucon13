@@ -40,11 +40,11 @@ down: ## docker compose down
 local-restart: ## restart mysql when you change schema
 	$(DOCKERCOMPOSE) down
 	docker volume rm isucon13_db_data
-	$(DOCKERCOMPOSE) up -d
+	$(DOCKERCOMPOSE) up -d db
 	sleep 10
 	-@$(DOCKERCOMPOSE) exec db /sql/migrate.sh
 	-@$(DOCKERCOMPOSE) exec db /sql/init.sh
-	$(shell cat ${RED}init_zone.shで怒られるが一旦無視${RESET})
+	$(shell echo ${RED}init_zone.shで怒られるが一旦無視${RESET})
 prod-restart: ## restart mysql when you change schema
 	./webapp/sql/migrate.sh
 
