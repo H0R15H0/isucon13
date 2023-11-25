@@ -44,6 +44,8 @@ local-restart: ## restart mysql when you change schema
 	sleep 10
 	-@$(DOCKERCOMPOSE) exec db /sql/init.sh
 	$(shell cat ${RED}init_zone.shで怒られるが一旦無視${RESET})
+prod-restart: ## restart mysql when you change schema
+	./webapp/sql/migrate.sh
 
 ## pt-query-digest
 pt-run: ## 
@@ -54,6 +56,10 @@ pt-show: ## show latest pt
 rm-log: ## remove mysql-slow.log
 	sudo rm -rf /var/log/mysql/mysql-slow.log
 	sudo systemctl restart mysql
+before-bench: ## restart mysql and remove mysql-slow.log
+	make prod-restart
+	make rm-log
+
 ## Help:
 help: ## Show this help.
 	@echo ''
