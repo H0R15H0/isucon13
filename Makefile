@@ -36,6 +36,15 @@ stop: ## docker compose stop
 down: ## docker compose down
 	$(DOCKERCOMPOSE) down
 
+## mysql
+local-restart: ## restart mysql when you change schema
+	$(DOCKERCOMPOSE) down
+	docker volume rm isucon13_db_data
+	$(DOCKERCOMPOSE) up -d
+	sleep 10
+	-@$(DOCKERCOMPOSE) exec db /sql/init.sh
+	$(shell cat ${RED}init_zone.shで怒られるが一旦無視${RESET})
+
 ## pt-query-digest
 pt-run: ## 
 	sudo pt-query-digest /var/log/mysql/mysql-slow.log > ./tmp/$(shell date +mysql-slow.log-%m-%d-%H-%M -d "+9 hours")
