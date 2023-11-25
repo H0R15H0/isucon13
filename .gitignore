@@ -31,3 +31,4 @@ webapp/rust/
 .mysql_history
 tmp/
 .lesshst
+.vim/

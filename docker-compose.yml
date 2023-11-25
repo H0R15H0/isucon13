@@ -1,0 +1,45 @@
+version: '3.1'
+
+services:
+  db:
+    image: mysql:8.0.35
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: isupipe
+      MYSQL_USER: isucon
+      MYSQL_PASSWORD: isucon
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./webapp/sql/initdb.d:/docker-entrypoint-initdb.d
+      - ./webapp/sql:/sql
+  go:
+    build: ./webapp/go
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      ISUCON13_MYSQL_DIALCONFIG_NET: tcp
+      ISUCON13_MYSQL_DIALCONFIG_ADDRESS: db
+      ISUCON13_MYSQL_DIALCONFIG_PORT: 3306
+      ISUCON13_MYSQL_DIALCONFIG_USER: isucon
+      ISUCON13_MYSQL_DIALCONFIG_DATABASE: isupipe
+      ISUCON13_MYSQL_DIALCONFIG_PARSETIME: true
+      ISUCON13_POWERDNS_SUBDOMAIN_ADDRESS: 35.74.96.81
+      ISUCON13_POWERDNS_DISABLED: false
+      # ISUCONDITION_DEBUG: 1
+
+  # frontend:
+  #   image: node:14.17.0
+  #   restart: always
+  #   working_dir: /home/isucon/isucon11-qualify/webapp
+  #   volumes:
+  #     - ./webapp/frontend:/home/isucon/isucon11-qualify/webapp
+  #   command: bash -c "npm run dev"
+  #   ports:
+  #     - "3333:3333"
+    
+volumes:
+  db_data:
