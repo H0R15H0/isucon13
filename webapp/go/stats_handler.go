@@ -86,12 +86,6 @@ func getUserStatisticsHandler(c echo.Context) error {
 		}
 	}
 
-	// ランク算出
-	var users []*UserModel
-	if err := tx.SelectContext(ctx, &users, "SELECT * FROM users"); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get users: "+err.Error())
-	}
-
 	var ranking UserRanking
 	type Reaction struct {
 		Sum  int64  `db:"reaction"`
@@ -108,7 +102,7 @@ func getUserStatisticsHandler(c echo.Context) error {
 	var tips []Tip
 
 	query := `
-		SELECT COUNT(*) as reaction, id, name FROM users u
+		SELECT COUNT(*) as reaction, u.id as id, u.name as name FROM users u
 		INNER JOIN livestreams l ON l.user_id = u.id
 		INNER JOIN reactions r ON r.livestream_id = l.id
 		GROUP BY u.id`
@@ -117,7 +111,7 @@ func getUserStatisticsHandler(c echo.Context) error {
 	}
 
 	query = `
-		SELECT IFNULL(SUM(l2.tip), 0) as tip, id, name FROM users u
+		SELECT IFNULL(SUM(l2.tip), 0) as tip, u.id as id, u.name as name FROM users u
 		INNER JOIN livestreams l ON l.user_id = u.id	
 		INNER JOIN livecomments l2 ON l2.livestream_id = l.id
 		GROUP BY u.id`
